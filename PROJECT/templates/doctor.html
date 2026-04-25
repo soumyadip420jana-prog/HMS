@@ -1,68 +1,63 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Doctors
-{% endblock title %}
+{% block title %}Doctors{% endblock title %}
 
 {% block body %}
 
-<div class="container">
+<section class="doctor-booking-section">
+    <div class="form-card" style="max-width:480px;">
 
-<div class="row">
+        <!-- Header -->
+        <div class="form-card-header">
+            <div class="icon-badge">&#128104;&#8205;&#9877;&#65039;</div>
+            <h2>Doctor Registration</h2>
+            <p>Register yourself as a doctor in the system</p>
+        </div>
 
-<div class="col-md-4"></div>
-<div class="col-md-4">
-{% with messages=get_flashed_messages(with_categories=true) %}
-{% if messages %}
-{% for category, message in messages %}
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
-<div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
-    {{message}}
+        <!-- Form -->
+        <form action="/doctors" method="post" novalidate>
 
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email"
+                       value="{{ current_user.email }}" required>
+            </div>
 
+            <div class="form-group">
+                <label for="doctorname">Doctor&apos;s Full Name</label>
+                <input type="text" class="form-control" id="doctorname" name="doctorname"
+                       placeholder="Dr. First Last" required>
+            </div>
 
-  {% endfor %}
-  {% endif %}
-  {% endwith %}
-<br>
-<h2 class="text-center text-white bg-dark">Doctors Booking</h2>
+            <div class="form-group">
+                <label for="dept">Specialisation / Department</label>
+                <input type="text" class="form-control" id="dept" name="dept"
+                       placeholder="e.g. Cardiology, Orthopaedics" required>
+            </div>
 
-<br>
-<form action="/doctors" method="post" class="jumbotron">
+            <div style="margin-top:1.5rem;">
+                <button type="submit" class="btn btn-dark btn-block"
+                        style="padding:0.8rem; font-size:1rem; border-radius:10px;">
+                    &#128203; Register Doctor
+                </button>
+            </div>
 
-<div class="form-group">
-
-<input type="email" class="form-control" name="email" value={{current_user.email}}  required>
-
-</div>
-
-<div class="form-group">
-
-<input type="text" class="form-control" name="doctorname" placeholder="Doctor Name" required>
-
-</div>
-
-
-<div class="form-group">
-
-<input type="text" class="form-control" name="dept" placeholder="Doctor Department" required>
-
-</div>
-
-
-  <button type="submit" class="btn btn-dark btn-sm btn-block">Book</button>
-
-</form>
-
-</div>
-<div class="col-md-4"></div>
-
-</div>
-
-</div>
+        </form>
+    </div>
+</section>
 
 {% endblock body %}

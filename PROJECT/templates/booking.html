@@ -1,64 +1,97 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Booking
-{% endblock title %}
+{% block title %}Booking Details{% endblock title %}
 
 {% block body %}
-{% with messages=get_flashed_messages(with_categories=true) %}
-{% if messages %}
-{% for category, message in messages %}
 
-<div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
-    {{message}}
+<div class="triggers-section">
+    <div class="container-fluid" style="max-width:1400px;">
 
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Table header -->
+        <div class="table-header">
+            <div>
+                <h2>&#128203; Booking Details</h2>
+                <p style="color:var(--text-muted); font-size:0.85rem; margin:0;">
+                    All patient appointment records
+                </p>
+            </div>
+        </div>
+
+        <!-- Responsive table wrapper -->
+        <div class="table-scroll-hint" style="overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:var(--radius-md);">
+            <table class="table" style="min-width:900px;">
+                <thead>
+                    <tr>
+                        <th scope="col">PID</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Slot</th>
+                        <th scope="col">Disease</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Department</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in query %}
+                    <tr>
+                        <th scope="row" style="color:var(--primary); font-weight:700;">
+                            #{{ post.pid }}
+                        </th>
+                        <td>{{ post.email }}</td>
+                        <td style="font-weight:600;">{{ post.name }}</td>
+                        <td>{{ post.gender }}</td>
+                        <td>
+                            <span class="pill pill-{{ post.slot }}">{{ post.slot }}</span>
+                        </td>
+                        <td>{{ post.disease }}</td>
+                        <td>{{ post.date }}</td>
+                        <td>{{ post.time }}</td>
+                        <td>
+                            <span class="badge-dept">{{ post.dept }}</span>
+                        </td>
+                        <td>{{ post.number }}</td>
+                        <td>
+                            <a href="/edit/{{ post.pid }}">
+                                <button class="btn btn-success" style="white-space:nowrap;">
+                                    &#9998; Edit
+                                </button>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="/delete/{{ post.pid }}">
+                                <button onclick="return confirm('Are you sure you want to delete this record?');"
+                                        class="btn btn-success"
+                                        style="background:linear-gradient(135deg,#e74c5e,#c0392b) !important; white-space:nowrap;">
+                                    &#128465;&#65039; Delete
+                                </button>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
 </div>
-
-
-  {% endfor %}
-  {% endif %}
-  {% endwith %}
-<table class="table">
-  <thead class="thead-light">
-    <tr>
-      <th scope="col">PID</th>
-      <th scope="col">EMAIL</th>
-      <th scope="col">NAME</th>
-      <th scope="col">GENDER</th>
-      <th scope="col">SLOT</th>
-      <th scope="col">DISEASE</th>
-      <th scope="col">DATE</th>
-      <th scope="col">TIME</th>
-      <th scope="col">D.DEPARTMENT</th>
-      <th scope="col">PHONE NUMBER</th>
-      <th scope="col">EDIT</th>
-      <th scope="col">DELETE</th>
-
-    </tr>
-  </thead>
-  <tbody>
-  {% for post in query %}
-    <tr>
-      <th scope="row">{{post.pid}}</th>
-      <td>{{post.email}}</td>
-      <td>{{post.name}}</td>
-      <td>{{post.gender}}</td>
-      <td>{{post.slot}}</td>
-      <td>{{post.disease}}</td>
-      <td>{{post.date}}</td>
-      <td>{{post.time}}</td>
-      <td>{{post.dept}}</td>
-      <td>{{post.number}}</td>
-    <td><a href="/edit/{{post.pid}}"><button class="btn btn-success">Edit </button> </a> </td>
-    <td><a href="/delete/{{post.pid}}"><button onclick="return confirm('Are you sure to Delete data');" class="btn btn-success">Delete </button> </a> </td>
-    </tr>
-{% endfor %}
-  
-  </tbody>
-</table>
-
 
 {% endblock body %}

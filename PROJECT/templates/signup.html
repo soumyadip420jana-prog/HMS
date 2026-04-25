@@ -1,89 +1,77 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Signup
-{% endblock title %}
+{% block title %}Sign Up{% endblock title %}
 
 {% block body %}
-<div class="container mt-3">
 
-<div class="row">
+<section class="auth-section">
+    <div class="auth-card">
 
+        <!-- Header -->
+        <div class="form-card-header">
+            <div class="icon-badge">&#9997;&#65039;</div>
+            <h2>Create Account</h2>
+            <p>Join H.M.S &mdash; it&apos;s quick and free</p>
+        </div>
 
-<div class="col-md-4">
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
-</div>
+        <!-- Form -->
+        <form action="/signup" method="POST" novalidate>
 
-<div class="col-md-4 jumbotron">
-<h4 class="text-center bg-light text-dark">Sign Up Here</h4>
-<br>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username"
+                       placeholder="Choose a username" autocomplete="username" required>
+            </div>
 
+            <div class="form-group">
+                <label for="usertype">Account Type</label>
+                <select class="form-control" id="usertype" name="usertype" required>
+                    <option value="" disabled selected>Select role&hellip;</option>
+                    <option value="Patient">&#128100; Patient</option>
+                    <option value="Doctor">&#128104;&#8205;&#9877;&#65039; Doctor</option>
+                </select>
+            </div>
 
-{% with messages=get_flashed_messages(with_categories=true) %}
-{% if messages %}
-{% for category, message in messages %}
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email"
+                       placeholder="you@example.com" autocomplete="email" required>
+                <small class="form-text text-muted">We&apos;ll never share your email with anyone else.</small>
+            </div>
 
-<div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
-    {{message}}
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password"
+                       placeholder="Create a strong password" autocomplete="new-password" required>
+            </div>
 
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
+            <div style="margin-top:1.6rem;">
+                <button type="submit" class="btn btn-dark btn-block"
+                        style="padding:0.75rem; font-size:1rem; border-radius:10px;">
+                    Create Account &rarr;
+                </button>
+            </div>
+        </form>
 
+        <p class="sub-link" style="text-align:center; margin-top:1.2rem; color:var(--text-muted); font-size:0.9rem;">
+            Already have an account? <a href="/login">Login</a>
+        </p>
 
-  {% endfor %}
-  {% endif %}
-  {% endwith %}
-
-
-<form action="/signup" method="POST">
-
-  <div class="form-group">
-    <label for="username">UserName</label>
-    <input type="text" class="form-control" id="username" name="username" required >
-  </div>
-
-  
- <div class="form-group">
-
-  <label for="usertype">Select UserType</label>          
-                                      
-<select class="form-control" id="usertype" name="usertype"  required>
-        <option selected>Select</option>
-        <option value="Patient">Patient</option>
-        <option value="Doctor">Doctor</option>
-      </select>
- </div>
-
-  <div class="form-group">
-    <label for="email">Email Address</label>
-    <input type="email" class="form-control" id="email" name="email" required>
-    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-  </div>
-
-
-  <div class="form-group">
-    <label for="password">Password</label>
-    <input type="password" class="form-control" id="password" name="password" required>
-  </div>
-  
-  <button type="submit" class="btn btn-dark btn-sm btn-block">Signup</button>
-</form>
-<br>
-Already a User <a href="/login">Login</a>
-
-</div>
-
-<div class="col-md-4">
-
-</div>
-
-
-</div>
-
-</div>
-
-
+    </div>
+</section>
 
 {% endblock body %}

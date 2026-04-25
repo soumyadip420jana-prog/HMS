@@ -1,149 +1,149 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Patients Booking
-{% endblock title %}
+{% block title %}Patients Booking{% endblock title %}
 
 {% block body %}
 
-<div class="container mt-3">
-<div class="row">
+<div class="container-fluid" style="padding: 2rem 1.5rem; max-width:1200px; margin:0 auto;">
 
-<div class="col-md-5">
-<div class="card" style="width: 18rem;">
-  <img src="static/images/doc.jpg" class="card-img-top" alt="...">
-  <div class="card-body">
-    <h5 class="card-title">HOSPITAL DOCTORS</h6>
-    <p class="card-text">Doctors Names</p>
-  </div>
-  <ul class="list-group list-group-flush">
-    <li class="list-group-item">Cras justo odio</li>
-    <li class="list-group-item">Dapibus ac facilisis in</li>
-    <li class="list-group-item">Vestibulum at eros</li>
-  </ul>
-  <div class="card-body">
-    <a href="#" class="card-link">Contact Us</a>
-    <a href="#" class="card-link">About US</a>
-  </div>
+    <!-- Page heading -->
+    <div style="margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:2px solid var(--border);">
+        <h2 style="font-size:1.7rem; color:var(--primary);">&#128203; Book Your Appointment</h2>
+        <p style="color:var(--text-muted); font-size:0.9rem; margin:0;">
+            Fill in the details below to secure your consultation slot.
+        </p>
+    </div>
+
+    <div class="patient-layout">
+
+        <!-- Sidebar: Doctor Info Card -->
+        <aside class="doctor-card-sidebar">
+            <img src="static/images/doc.jpg" alt="Hospital Doctors">
+            <div class="doctor-card-body">
+                <h5>Hospital Doctors</h5>
+                <p>Our certified specialists across all departments</p>
+            </div>
+            <ul class="doctor-list">
+                <li>General Medicine</li>
+                <li>Cardiology</li>
+                <li>Orthopaedics</li>
+            </ul>
+            <div class="doctor-card-links">
+                <a href="#">&#128222; Contact Us</a>
+                <a href="#">&#8505;&#65039; About Us</a>
+            </div>
+        </aside>
+
+        <!-- Main Booking Form -->
+        <main class="booking-form-container">
+            <h4>&#128197; Book Your Slot</h4>
+
+            <!-- Flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form action="/patients" method="post" novalidate>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" class="form-control" id="email"
+                                   value="{{ current_user.email }}" name="email" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" class="form-control" id="name" name="name"
+                                   placeholder="Your full name" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select class="form-control" id="gender" name="gender" required>
+                                <option value="" disabled selected>Select gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="slot">Preferred Slot</label>
+                            <select class="form-control" id="slot" name="slot" required>
+                                <option value="" disabled selected>Select slot</option>
+                                <option value="morning">&#127774; Morning</option>
+                                <option value="evening">&#127783;&#65039; Evening</option>
+                                <option value="night">&#127762; Night</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="time">Time</label>
+                            <input type="time" class="form-control" name="time" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" class="form-control" name="date" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="disease">Condition / Disease</label>
+                    <input type="text" class="form-control" id="disease" name="disease"
+                           placeholder="Briefly describe your condition" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="dept">Doctor Department</label>
+                    <select class="form-control" id="dept" name="dept" required>
+                        <option value="" disabled selected>Select department</option>
+                        {% for d in doct %}
+                            <option value="{{ d.dept }}">{{ d.dept }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="number">Phone Number</label>
+                    <input type="number" class="form-control" id="number" name="number"
+                           placeholder="10-digit mobile number" required>
+                </div>
+
+                <div style="margin-top:1.5rem;">
+                    <button type="submit" id="btn" class="btn btn-dark btn-block"
+                            style="padding:0.8rem; font-size:1rem; border-radius:10px;">
+                        &#128203; Confirm Booking
+                    </button>
+                </div>
+
+            </form>
+        </main>
+
+    </div>
 </div>
-
-</div>
-
-<div class="col-md-5">
-
-<h4 class="text-center bg-dark text-white">Book Your Slot</h4>
-<br>
-
-
-{% with messages=get_flashed_messages(with_categories=true) %}
-{% if messages %}
-{% for category, message in messages %}
-
-<div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
-    {{message}}
-
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-
-
-  {% endfor %}
-  {% endif %}
-  {% endwith %}
-
-
-
-<form action="/patients" method="post" class="jumbotron">
-
- 
-
-  <div class="form-group">
-
-    <input type="email" class="form-control" id="email" value={{current_user.email}} name="email" required>
-  
-  </div>
-
-  <div class="form-group">
-  
-    <input type="text" class="form-control" id="name" name="name" placeholder="Full Name" required>
-  
-  </div>
-
- <div class="form-group">
-
-            
-                                      
-<select class="form-control" id="gender" name="gender"  required>
-        <option selected>Gender</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-        <option value="Others">Others</option>
- 
-      </select>
- </div>
-
- <div class="form-group">
-
-            
-                                      
-<select class="form-control" id="slot" name="slot"  required>
-        <option selected>Slot</option>
-        <option value="morning">Morning</option>
-        <option value="evening">Evening</option>
-        <option value="night">Night</option>
- 
-      </select>
- </div>
-
-  <div class="form-group">
-    
-    <input type="time" class="form-control" name="time" placeholder="Time" required>
-  
-  </div>
-  <div class="form-group">
-    
-    <input type="date" class="form-control" name="date" placeholder="date" required>
-  
-  </div>
-  <div class="form-group">
-    
-    <input type="text" class="form-control" id="disease" name="disease" placeholder="Disease" required>
-  
-  </div>
-
-<div class="form-group">
-
-            
-                                      
-<select class="form-control" id="dept" name="dept"  required>
-        <option selected>Select Doctor Department</option>
-        {% for d in doct  %}
-        <option value="{{d.dept}}">{{d.dept}}</option>
-        {% endfor %}
-      </select>
- </div>
-
-  <div class="form-group">
-
-    <input type="number" class="form-control" id="number" name="number" placeholder="Phone Number" required>
-  
-  </div>
-
-  
-  <button type="submit" id="btn" class="btn btn-dark btn-sm btn-block">Book</button>
-</form>
-
-</div>
-
-
-</div>
-
-
-
-</div>
-
-
-
 
 {% endblock body %}

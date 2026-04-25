@@ -1,55 +1,90 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Trigers
-{% endblock title %}
+{% block title %}Audit Log{% endblock title %}
 
 {% block body %}
-{% with messages=get_flashed_messages(with_categories=true) %}
-{% if messages %}
-{% for category, message in messages %}
 
-<div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
-    {{message}}
+<div class="triggers-section">
+    <div class="container-fluid" style="max-width:1200px; margin:0 auto;">
 
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
+        <!-- Table header -->
+        <div class="table-header">
+            <div>
+                <h2>&#128221; Audit Log</h2>
+                <p style="color:var(--text-muted); font-size:0.85rem; margin:0;">
+                    Complete record of all database actions and triggers
+                </p>
+            </div>
+        </div>
 
-  {% endfor %}
-  {% endif %}
-  {% endwith %}
+        <!-- Responsive table -->
+        <div class="table-scroll-hint" style="overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:var(--radius-md);">
+            <table class="table" style="min-width:680px;">
+                <thead>
+                    <tr>
+                        <th scope="col">TID</th>
+                        <th scope="col">PID</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in posts %}
+                    <tr>
+                        <th scope="row" style="color:var(--primary); font-weight:700;">
+                            #{{ post.tid }}
+                        </th>
+                        <td>#{{ post.pid }}</td>
+                        <td>{{ post.email }}</td>
+                        <td style="font-weight:600;">{{ post.name }}</td>
+                        <td>
+                            {% if post.action == 'INSERT' or post.action == 'insert' %}
+                                <span class="pill"
+                                      style="background:#d4f7e8; color:#0a4f3c;">
+                                    &#10010; {{ post.action }}
+                                </span>
+                            {% elif post.action == 'DELETE' or post.action == 'delete' %}
+                                <span class="pill"
+                                      style="background:#fde8ec; color:#7d0f1e;">
+                                    &#10006; {{ post.action }}
+                                </span>
+                            {% elif post.action == 'UPDATE' or post.action == 'update' %}
+                                <span class="pill"
+                                      style="background:#fef3d4; color:#7a5000;">
+                                    &#9998; {{ post.action }}
+                                </span>
+                            {% else %}
+                                <span class="pill" style="background:#e9ecef; color:#495057;">
+                                    {{ post.action }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td style="color:var(--text-muted); font-size:0.83rem; white-space:nowrap;">
+                            {{ post.timestamp }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-  <div class="container mt-4">
-<table class="table">
-  <thead class="thead-light">
-    <tr>
-      <th scope="col">TID</th>
-      <th scope="col">PID</th>
-      <th scope="col">EMAIL</th>
-      <th scope="col">NAME</th>
-      <th scope="col">ACTION</th>
-      <th scope="col">TIMESTAMP</th>
- 
-    </tr>
-  </thead>
-  <tbody>
-  {% for post in posts %}
-    <tr>
-      <th scope="row">{{post.tid}}</th>
-      <td>{{post.pid}}</td>
-      <td>{{post.email}}</td>
-      <td>{{post.name}}</td>
-      <td>{{post.action}}</td>
-      <td>{{post.timestamp}}</td>
-
-    </tr>
-{% endfor %}
-  
-  </tbody>
-</table>
+    </div>
 </div>
 
 {% endblock body %}
