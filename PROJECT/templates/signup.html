@@ -2,76 +2,890 @@
 
 {% block title %}Sign Up{% endblock title %}
 
+{% block css %}
+<style>
+/* ===== PRE-SIGNUP HERO ===== */
+.presignup-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(160deg, #071c15 0%, #0a2e22 40%, #0d3d2c 70%, #062018 100%);
+  padding: 5rem 2rem 4rem;
+}
+
+/* Animated orb glows */
+.presignup-hero::before {
+  content: '';
+  position: absolute;
+  width: 900px;
+  height: 900px;
+  background: radial-gradient(circle at 30% 40%, rgba(46,204,138,0.18) 0%, transparent 55%),
+              radial-gradient(circle at 75% 70%, rgba(10,79,60,0.3) 0%, transparent 50%);
+  top: -200px;
+  left: -200px;
+  animation: orbFloat1 18s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.presignup-hero::after {
+  content: '';
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(46,204,138,0.12) 0%, transparent 60%);
+  bottom: -200px;
+  right: -150px;
+  animation: orbFloat2 22s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes orbFloat1 {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(60px,40px) scale(1.1); }
+}
+@keyframes orbFloat2 {
+  from { transform: translate(0,0) scale(1.05); }
+  to   { transform: translate(-50px,-30px) scale(0.95); }
+}
+
+/* Drifting grid */
+.hero-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(46,204,138,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(46,204,138,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  animation: gridDrift 30s linear infinite;
+}
+
+@keyframes gridDrift {
+  from { transform: translateY(0); }
+  to   { transform: translateY(60px); }
+}
+
+/* Floating particles */
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  animation: particleRise var(--dur, 8s) ease-in-out var(--delay, 0s) infinite;
+}
+
+@keyframes particleRise {
+  0%   { opacity: 0; transform: translateY(100%) scale(0); }
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.2; }
+  100% { opacity: 0; transform: translateY(-120vh) scale(1.5) rotate(180deg); }
+}
+
+/* Main hero content */
+.hero-content {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Eyebrow badge */
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(46,204,138,0.12);
+  border: 1px solid rgba(46,204,138,0.3);
+  border-radius: 99px;
+  padding: 0.4rem 1.2rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 0.7s ease 0.2s forwards;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(46,204,138,0.5); }
+  50%       { box-shadow: 0 0 0 8px rgba(46,204,138,0); }
+}
+
+/* Headline */
+.hero-headline {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.4s forwards;
+}
+
+.hero-headline .highlight {
+  color: var(--accent);
+  position: relative;
+  display: inline-block;
+}
+
+.hero-headline .highlight::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  border-radius: 99px;
+  transform-origin: left;
+  animation: underlineDraw 1s ease 1.2s both;
+}
+
+@keyframes underlineDraw {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* Subtext */
+.hero-sub {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  color: rgba(255,255,255,0.65);
+  max-width: 560px;
+  margin: 0 auto 3rem;
+  line-height: 1.7;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.6s forwards;
+}
+
+/* Stats */
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 3.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.8s forwards;
+}
+
+.stat-item {
+  text-align: center;
+  position: relative;
+}
+
+.stat-item + .stat-item::before {
+  content: '';
+  position: absolute;
+  left: -1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 40px;
+  background: rgba(255,255,255,0.15);
+}
+
+.stat-number {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+/* CTA Buttons */
+.hero-cta-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 4rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1s forwards;
+}
+
+.btn-hero-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: linear-gradient(135deg, var(--accent) 0%, #22a96d 100%);
+  color: #0a2219 !important;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.9rem 2.2rem;
+  border-radius: var(--radius-xl);
+  border: none;
+  cursor: pointer;
+  text-decoration: none !important;
+  transition: var(--transition);
+  box-shadow: 0 8px 32px rgba(46,204,138,0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-hero-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 48px rgba(46,204,138,0.5);
+  color: #0a2219 !important;
+}
+
+.btn-hero-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.85) !important;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.9rem 2.2rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  text-decoration: none !important;
+  transition: var(--transition);
+  backdrop-filter: blur(8px);
+}
+
+.btn-hero-secondary:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(46,204,138,0.4);
+  color: var(--white) !important;
+  transform: translateY(-2px);
+}
+
+/* Scroll cue */
+.scroll-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1.4s forwards;
+  cursor: pointer;
+}
+
+.scroll-arrow span {
+  display: block;
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, rgba(46,204,138,0.6));
+  animation: linePulse 2s ease-in-out infinite;
+}
+
+.scroll-arrow-icon {
+  font-size: 1.4rem;
+  color: var(--accent);
+  animation: arrowBounce 1.5s ease-in-out infinite;
+}
+
+@keyframes arrowBounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(8px); }
+}
+
+@keyframes linePulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+
+/* Features strip */
+.features-strip {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  max-width: 1000px;
+  width: 100%;
+  margin: 3rem auto 0;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(46,204,138,0.15);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1.2s forwards;
+}
+
+.feature-tile {
+  padding: 1.8rem 1.5rem;
+  text-align: center;
+  border-right: 1px solid rgba(46,204,138,0.1);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-tile:last-child { border-right: none; }
+
+.feature-tile::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(46,204,138,0.08), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.feature-tile:hover::before { opacity: 1; }
+.feature-tile:hover { transform: translateY(-2px); }
+
+.feature-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.6rem;
+  animation: iconFloat 4s ease-in-out infinite;
+}
+
+.feature-tile:nth-child(2) .feature-icon { animation-delay: 0.5s; }
+.feature-tile:nth-child(3) .feature-icon { animation-delay: 1s; }
+.feature-tile:nth-child(4) .feature-icon { animation-delay: 1.5s; }
+
+@keyframes iconFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+.feature-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+
+.feature-desc {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.5;
+}
+
+/* ===== WAVE DIVIDER ===== */
+.wave-divider {
+  background: linear-gradient(to bottom, #071c15, var(--off-white));
+  line-height: 0;
+}
+
+/* ===== AUTH SECTION ===== */
+.auth-section {
+  position: relative;
+  min-height: auto;
+  display: block;
+  padding: 4rem 1rem 5rem;
+  background: var(--off-white);
+}
+
+.auth-section::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(46,204,138,0.07) 0%, transparent 65%);
+  top: -100px;
+  right: -100px;
+  pointer-events: none;
+}
+
+.auth-section::after {
+  content: '';
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(10,79,60,0.05) 0%, transparent 65%);
+  bottom: 0;
+  left: -80px;
+  pointer-events: none;
+}
+
+.auth-section-label {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.auth-section-label.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.auth-section-label h3 {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.auth-section-label p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* Auth card */
+.auth-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 2.5rem 2.2rem;
+  width: 100%;
+  max-width: 460px;
+  border: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+  transition: box-shadow 0.4s ease, transform 0.4s ease, opacity 0.6s ease;
+  opacity: 0;
+  transform: translateY(40px) scale(0.97);
+}
+
+.auth-card.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s,
+              transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s,
+              box-shadow 0.4s ease;
+}
+
+.auth-card:hover {
+  box-shadow: 0 28px 80px rgba(10,79,60,0.2);
+  transform: translateY(-4px) scale(1);
+}
+
+/* Top shimmer bar */
+.auth-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  width: 80%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  border-radius: 0 0 4px 4px;
+  animation: topBarShimmer 4s ease-in-out 2s infinite;
+}
+
+@keyframes topBarShimmer {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; filter: drop-shadow(0 0 4px var(--accent)); }
+}
+
+/* Icon badge pop */
+.icon-badge {
+  animation: badgeEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s both;
+}
+
+@keyframes badgeEntrance {
+  from { opacity: 0; transform: scale(0) rotate(-30deg); }
+  to   { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+/* Staggered form fields */
+.auth-card.visible .form-group {
+  animation: slideInField 0.5s ease both;
+}
+
+.auth-card.visible .form-group:nth-child(1) { animation-delay: 0.4s; }
+.auth-card.visible .form-group:nth-child(2) { animation-delay: 0.55s; }
+.auth-card.visible .form-group:nth-child(3) { animation-delay: 0.7s; }
+.auth-card.visible .form-group:nth-child(4) { animation-delay: 0.85s; }
+
+@keyframes slideInField {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Input lift on focus */
+.form-control {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease,
+              background 0.25s ease, transform 0.15s ease !important;
+}
+
+.form-control:focus {
+  transform: translateY(-1px) !important;
+}
+
+/* Submit button shimmer */
+.btn-signup-submit {
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+}
+
+.btn-signup-submit::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 60%;
+  height: 200%;
+  background: linear-gradient(105deg, transparent, rgba(255,255,255,0.2), transparent);
+  transform: skewX(-20deg);
+  animation: shimmer 3.5s ease-in-out 2.5s infinite;
+}
+
+@keyframes shimmer {
+  0%   { left: -100%; }
+  60%  { left: 130%; }
+  100% { left: 130%; }
+}
+
+.btn-signup-submit:hover {
+  transform: translateY(-2px) scale(1.01) !important;
+  box-shadow: 0 10px 30px rgba(10,79,60,0.35) !important;
+}
+
+/* Trust signals */
+.trust-signals {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 1.4rem;
+  opacity: 0;
+  transition: opacity 0.6s ease 1.2s;
+}
+
+.auth-card.visible .trust-signals {
+  opacity: 1;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.trust-item::before {
+  content: '✓';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: var(--primary-ultra-light);
+  color: var(--accent);
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .hero-stats { gap: 1.5rem; }
+  .stat-item + .stat-item::before { display: none; }
+  .features-strip { grid-template-columns: repeat(2, 1fr); }
+  .feature-tile:nth-child(2) { border-right: none; }
+  .feature-tile:nth-child(3),
+  .feature-tile:nth-child(4) { border-top: 1px solid rgba(46,204,138,0.1); }
+  .hero-cta-group { flex-direction: column; align-items: center; }
+  .btn-hero-primary,
+  .btn-hero-secondary { width: 100%; max-width: 320px; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .features-strip { grid-template-columns: 1fr; }
+  .feature-tile { border-right: none; border-top: 1px solid rgba(46,204,138,0.1); }
+  .feature-tile:first-child { border-top: none; }
+  .stat-number { font-size: 1.8rem; }
+}
+</style>
+{% endblock css %}
+
 {% block body %}
 
-<section class="auth-section">
-    <div class="auth-card">
+<!-- ===== PRE-SIGNUP HERO ===== -->
+<section class="presignup-hero" id="presignup-hero">
+
+  <div class="hero-grid-overlay"></div>
+
+  <!-- Floating particles -->
+  <div class="hero-particles" aria-hidden="true">
+    <div class="particle" style="width:4px;height:4px;left:10%;--dur:9s;--delay:0s;"></div>
+    <div class="particle" style="width:6px;height:6px;left:22%;--dur:12s;--delay:1.5s;"></div>
+    <div class="particle" style="width:3px;height:3px;left:38%;--dur:8s;--delay:3s;"></div>
+    <div class="particle" style="width:5px;height:5px;left:55%;--dur:14s;--delay:0.7s;"></div>
+    <div class="particle" style="width:4px;height:4px;left:68%;--dur:10s;--delay:2.2s;"></div>
+    <div class="particle" style="width:7px;height:7px;left:80%;--dur:11s;--delay:4s;"></div>
+    <div class="particle" style="width:3px;height:3px;left:91%;--dur:9s;--delay:1s;"></div>
+    <div class="particle" style="width:5px;height:5px;left:45%;--dur:13s;--delay:5s;"></div>
+  </div>
+
+  <!-- Content -->
+  <div class="hero-content">
+
+    <div class="hero-eyebrow">
+      &#127973;&nbsp; Hospital Management System
+    </div>
+
+    <h1 class="hero-headline">
+      Your Health,<br>Our <span class="highlight">Priority</span>
+    </h1>
+
+    <p class="hero-sub">
+      Join thousands of patients and doctors managing healthcare seamlessly.
+      Book appointments, track records, and connect with specialists — all in one place.
+    </p>
+
+    <!-- Animated stats -->
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-number" data-target="2400" data-suffix="+">0+</span>
+        <span class="stat-label">Patients Served</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" data-target="120" data-suffix="+">0+</span>
+        <span class="stat-label">Doctors Registered</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" data-target="15" data-suffix="+">0+</span>
+        <span class="stat-label">Departments</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">24/7</span>
+        <span class="stat-label">Emergency Care</span>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="hero-cta-group">
+      <a href="#signup-section" class="btn-hero-primary" id="hero-signup-btn">
+        &#9997;&#65039;&nbsp; Create Free Account
+      </a>
+      <a href="/login" class="btn-hero-secondary">
+        &#128275;&nbsp; Already have an account
+      </a>
+    </div>
+
+    <!-- Scroll cue -->
+    <div class="scroll-arrow" id="scroll-cue" role="button" aria-label="Scroll down to sign up">
+      <span></span>
+      <div class="scroll-arrow-icon">&#8964;</div>
+    </div>
+
+  </div>
+
+  <!-- Feature tiles -->
+  <div class="features-strip">
+    <div class="feature-tile">
+      <span class="feature-icon">&#128203;</span>
+      <div class="feature-title">Easy Booking</div>
+      <div class="feature-desc">Book appointments in under 60 seconds</div>
+    </div>
+    <div class="feature-tile">
+      <span class="feature-icon">&#128104;&#8205;&#9877;&#65039;</span>
+      <div class="feature-title">Expert Doctors</div>
+      <div class="feature-desc">Verified specialists across all departments</div>
+    </div>
+    <div class="feature-tile">
+      <span class="feature-icon">&#128274;</span>
+      <div class="feature-title">Secure Records</div>
+      <div class="feature-desc">Your data protected with encryption</div>
+    </div>
+    <div class="feature-tile">
+      <span class="feature-icon">&#9889;</span>
+      <div class="feature-title">Instant Access</div>
+      <div class="feature-desc">Real-time updates and notifications</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- Wave divider -->
+<div class="wave-divider">
+  <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;width:100%;height:80px;">
+    <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z" fill="var(--off-white)"/>
+  </svg>
+</div>
+
+<!-- ===== SIGNUP FORM SECTION ===== -->
+<section class="auth-section" id="signup-section">
+  <div style="position:relative;z-index:1;width:100%;">
+
+    <div class="auth-section-label" id="auth-label">
+      <h3>Create Your Account</h3>
+      <p>Join H.M.S &mdash; it only takes a minute</p>
+    </div>
+
+    <div style="display:flex;justify-content:center;padding:0 1rem;">
+      <div class="auth-card" id="auth-card">
 
         <!-- Header -->
         <div class="form-card-header">
-            <div class="icon-badge">&#9997;&#65039;</div>
-            <h2>Create Account</h2>
-            <p>Join H.M.S &mdash; it&apos;s quick and free</p>
+          <div class="icon-badge">&#9997;&#65039;</div>
+          <h2>Create Account</h2>
+          <p>Join H.M.S &mdash; it&apos;s quick and free</p>
         </div>
 
         <!-- Flash messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% endfor %}
-            {% endif %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            {% endfor %}
+          {% endif %}
         {% endwith %}
 
         <!-- Form -->
         <form action="/signup" method="POST" novalidate>
 
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username"
-                       placeholder="Choose a username" autocomplete="username" required>
-            </div>
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username"
+                   placeholder="Choose a username" autocomplete="username" required>
+          </div>
 
-            <div class="form-group">
-                <label for="usertype">Account Type</label>
-                <select class="form-control" id="usertype" name="usertype" required>
-                    <option value="" disabled selected>Select role&hellip;</option>
-                    <option value="Patient">&#128100; Patient</option>
-                    <option value="Doctor">&#128104;&#8205;&#9877;&#65039; Doctor</option>
-                </select>
-            </div>
+          <div class="form-group">
+            <label for="usertype">Account Type</label>
+            <select class="form-control" id="usertype" name="usertype" required>
+              <option value="" disabled selected>Select role&hellip;</option>
+              <option value="Patient">&#128100; Patient</option>
+              <option value="Doctor">&#128104;&#8205;&#9877;&#65039; Doctor</option>
+            </select>
+          </div>
 
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" class="form-control" id="email" name="email"
-                       placeholder="you@example.com" autocomplete="email" required>
-                <small class="form-text text-muted">We&apos;ll never share your email with anyone else.</small>
-            </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" class="form-control" id="email" name="email"
+                   placeholder="you@example.com" autocomplete="email" required>
+            <small class="form-text text-muted">We&apos;ll never share your email with anyone else.</small>
+          </div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password"
-                       placeholder="Create a strong password" autocomplete="new-password" required>
-            </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password"
+                   placeholder="Create a strong password" autocomplete="new-password" required>
+          </div>
 
-            <div style="margin-top:1.6rem;">
-                <button type="submit" class="btn btn-dark btn-block"
-                        style="padding:0.75rem; font-size:1rem; border-radius:10px;">
-                    Create Account &rarr;
-                </button>
-            </div>
+          <div style="margin-top:1.6rem;">
+            <button type="submit" class="btn btn-dark btn-block btn-signup-submit"
+                    style="padding:0.85rem;font-size:1rem;border-radius:10px;">
+              Create Account &rarr;
+            </button>
+          </div>
         </form>
 
-        <p class="sub-link" style="text-align:center; margin-top:1.2rem; color:var(--text-muted); font-size:0.9rem;">
-            Already have an account? <a href="/login">Login</a>
+        <!-- Trust signals -->
+        <div class="trust-signals">
+          <div class="trust-item">Free forever</div>
+          <div class="trust-item">No credit card</div>
+          <div class="trust-item">Secure &amp; private</div>
+        </div>
+
+        <p class="sub-link" style="text-align:center;margin-top:1.2rem;color:var(--text-muted);font-size:0.9rem;">
+          Already have an account? <a href="/login">Login</a>
         </p>
 
+      </div>
     </div>
+
+  </div>
 </section>
 
 {% endblock body %}
+
+{% block scripts %}
+<script>
+(function () {
+
+  /* --- Smooth scroll for hero CTA & arrow --- */
+  function scrollToSection(targetId) {
+    const el = document.getElementById(targetId);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  document.getElementById('hero-signup-btn')
+    .addEventListener('click', function (e) { e.preventDefault(); scrollToSection('signup-section'); });
+
+  document.getElementById('scroll-cue')
+    .addEventListener('click', function () { scrollToSection('signup-section'); });
+
+  /* --- Counter animation --- */
+  const counters = document.querySelectorAll('.stat-number[data-target]');
+  const counterIO = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = parseInt(el.getAttribute('data-target'), 10);
+      const suffix = el.getAttribute('data-suffix') || '';
+      let startTime = null;
+      const duration = 1800;
+      function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.floor(eased * target).toLocaleString() + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+      counterIO.unobserve(el);
+    });
+  }, { threshold: 0.6 });
+
+  counters.forEach(function (c) { counterIO.observe(c); });
+
+  /* --- Scroll-triggered card & label animations --- */
+  var authLabel = document.getElementById('auth-label');
+  var authCard = document.getElementById('auth-card');
+
+  var revealIO = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealIO.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  if (authLabel) revealIO.observe(authLabel);
+  if (authCard)  revealIO.observe(authCard);
+
+})();
+</script>
+{% endblock scripts %}
